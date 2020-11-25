@@ -1,0 +1,28 @@
+{
+  "name": "express-mesto",
+  "version": "1.0.0",
+  "description": "Проект по Node.js/Express.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "PORT=3000 app.js",
+    "dev": "nodemon PORT=3000 app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thedoft/express-mesto.git"
+  },
+  "keywords": [],
+  "author": "thedoft",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thedoft/express-mesto/issues"
+  },
+  "homepage": "https://github.com/thedoft/express-mesto#readme",
+  "dependencies": {
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.6"
+  }
+}
