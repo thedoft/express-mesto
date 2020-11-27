@@ -7,7 +7,7 @@ const sendCards = (req, res) => {
       res.send(cards);
     })
     .catch((err) => {
-      console.log(err);
+      res.status(500).send({ message: err });
     });
 };
 
