@@ -1,4 +1,4 @@
-const getCards = require('./getCards');
+const getCards = require('../helpers/getCards');
 
 const sendCards = (req, res) => {
   getCards()
