@@ -18,7 +18,7 @@ const sendUserById = (req, res) => {
       const currentUser = users.find((u) => u._id === req.params.id);
 
       if (currentUser === undefined) {
-        res.send({ message: 'Нет пользователя с таким id' });
+        res.status(404).send({ message: 'Нет пользователя с таким id' });
         return;
       }
       res.send(currentUser);
