@@ -29,7 +29,6 @@ const updateUserInfo = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
     .then((user) => res.send({ user }))
@@ -45,7 +44,6 @@ const updateUserAvatar = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
     .then((user) => res.send({ user }))
