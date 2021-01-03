@@ -16,7 +16,13 @@ const createCard = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.id)
-    .then((card) => res.send({ card }))
+    .then((card) => {
+      if (card) {
+        res.send({ card });
+      } else {
+        next();
+      }
+    })
     .catch((err) => next(err));
 };
 
@@ -26,7 +32,13 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ card }))
+    .then((card) => {
+      if (card) {
+        res.send({ card });
+      } else {
+        next();
+      }
+    })
     .catch((err) => next(err));
 };
 
@@ -36,7 +48,13 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ card }))
+    .then((card) => {
+      if (card) {
+        res.send({ card });
+      } else {
+        next();
+      }
+    })
     .catch((err) => next(err));
 };
 

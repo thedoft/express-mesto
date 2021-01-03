@@ -29,9 +29,9 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use((err, req, res, next) => {
-  if (err.name === 'CastError' || err.message.includes('not found')) {
+  if (!err || err.message.includes('not found')) {
     next();
-  } else if (err.name === 'ValidationError') {
+  } else if (err.name === 'ValidationError' || err.name === 'CastError') {
     res.status(400).send({ message: `${err.name} - ${err.message}` });
   } else {
     res.status(500).send({ message: `${err.name} - ${err.message}` });
