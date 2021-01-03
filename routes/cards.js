@@ -1,14 +1,17 @@
-const getCards = require('../helpers/getCards');
+const router = require('express').Router();
 
-const sendCards = (req, res) => {
-  getCards()
-    .then((data) => {
-      const cards = JSON.parse(data);
-      res.send(cards);
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err });
-    });
-};
+const {
+  getCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
+} = require('../controllers/cards');
 
-module.exports = sendCards;
+router.get('/', getCards);
+router.post('/', createCard);
+router.delete('/:id', deleteCard);
+router.put('/:id/likes', likeCard);
+router.delete('/:id/likes', dislikeCard);
+
+module.exports = router;
