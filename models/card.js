@@ -12,7 +12,7 @@ const cardSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return v.match(/^(https?:\/\/)(www\.)?([\da-z-]+)\.([a-z.]{2,6})[\da-z-._~:?#[\]@!$&'()*+,;=/]*\/?#?$/);
+        return v.match(/^(https?:\/\/)(www\.)?([\da-z-.]+)\.([a-z.]{2,6})[\da-zA-Z-._~:?#[\]@!$&'()*+,;=/]*\/?#?$/);
       },
       message: 'Строка должна содержать ссылку!',
     },
