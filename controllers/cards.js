@@ -15,7 +15,14 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.id)
+  Card.findById(req.params.id)
+    .then((card) => {
+      if (card.owner !== req.user._id) {
+        return Promise.reject(new Error('Нет прав для совершения данной операции'));
+      }
+
+      return Card.deleteOne({ _id: req.params._id });
+    })
     .then((card) => {
       if (card) {
         res.send({ card });

@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 
+const { createUser, login } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+
 const { PORT } = process.env;
 const app = express();
 
@@ -20,13 +23,10 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5ff1e20eb317998299e1ff74',
-  };
+app.post('/signup', createUser);
+app.post('/signin', login);
 
-  next();
-});
+app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
@@ -34,7 +34,7 @@ app.use('/cards', require('./routes/cards'));
 app.use((err, req, res, next) => {
   if (!err || err.message.includes('not found')) {
     next();
-  } else if (err.message === 'Неправильные почта или пароль') {
+  } else if (err.message === 'Неправильные почта или пароль' || err.message === 'Необходима авторизация') {
     res.status(401).send({ message: err.message });
   } else if (err.name === 'ValidationError' || err.name === 'CastError') {
     res.status(400).send({ message: `${err.name} - ${err.message}` });
