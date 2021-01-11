@@ -1,36 +1,44 @@
 const Card = require('../models/card');
 
+const NotFoundError = require('../errors/not-found-err');
+const BadRequestError = require('../errors/bad-request-err');
+const ForbiddenError = require('../errors/forbidden-err');
+
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ cards }))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ card }))
-    .catch((err) => next(err));
+    .then((card) => {
+      if (!card) {
+        throw new BadRequestError('Переданы некорректные данные');
+      }
+
+      res.send({ card });
+    })
+    .catch(next);
 };
 
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.id)
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Карточка не найдена');
+      }
+
       if (card.owner !== req.user._id) {
-        return Promise.reject(new Error('Нет прав для совершения данной операции'));
+        throw new ForbiddenError('Нет прав для совершения данной операции');
       }
 
       return Card.deleteOne({ _id: req.params._id });
     })
-    .then((card) => {
-      if (card) {
-        res.send({ card });
-      } else {
-        next();
-      }
-    })
-    .catch((err) => next(err));
+    .then((card) => res.send({ card }))
+    .catch(next);
 };
 
 const likeCard = (req, res, next) => {
@@ -40,13 +48,13 @@ const likeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      if (card) {
-        res.send({ card });
-      } else {
-        next();
+      if (!card) {
+        throw new NotFoundError('Карточка не найдена');
       }
+
+      res.send({ card });
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const dislikeCard = (req, res, next) => {
@@ -56,13 +64,13 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      if (card) {
-        res.send({ card });
-      } else {
-        next();
+      if (!card) {
+        throw new NotFoundError('Карточка не найдена');
       }
+
+      res.send({ card });
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 module.exports = {
