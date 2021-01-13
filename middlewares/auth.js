@@ -5,7 +5,7 @@ const { JWT_SECRET } = process.env;
 const UnauthorizedError = require('../errors/unauthorized-err');
 
 const auth = (req, res, next) => {
-  const { authorization } = req.headers;
+  const authorization = req.cookies.jwt;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
     throw new UnauthorizedError('Токен не передан или передан не в том формате');
