@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const {
   getCards,
@@ -12,9 +13,6 @@ const {
 router.get('/', getCards);
 
 router.post('/', celebrate({
-  user: Joi.object().keys({
-    _id: Joi.string().hex().required(),
-  }),
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
     link: Joi.string().uri({
@@ -28,29 +26,20 @@ router.post('/', celebrate({
 }), createCard);
 
 router.delete('/:id', celebrate({
-  user: Joi.object().keys({
-    _id: Joi.string().hex().required(),
-  }),
   params: Joi.object().keys({
-    id: Joi.string().hex(),
+    id: Joi.objectId(),
   }),
 }), deleteCard);
 
 router.put('/:id/likes', celebrate({
-  user: Joi.object().keys({
-    _id: Joi.string().hex().required(),
-  }),
   params: Joi.object().keys({
-    id: Joi.string().hex(),
+    id: Joi.objectId(),
   }),
 }), likeCard);
 
 router.delete('/:id/likes', celebrate({
-  user: Joi.object().keys({
-    _id: Joi.string().hex().required(),
-  }),
   params: Joi.object().keys({
-    id: Joi.string().hex(),
+    id: Joi.objectId(),
   }),
 }), dislikeCard);
 

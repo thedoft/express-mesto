@@ -50,15 +50,7 @@ app.post('/signin', celebrate({
   }),
 }), login);
 
-app.use(celebrate({
-  headers: Joi.object().keys({
-    Cookie: `
-    jwt=Bearer ${Joi.string().base64({ paddingRequired: false })}
-    .${Joi.string().base64({ paddingRequired: false })}
-    .${Joi.string().base64({ paddingRequired: false })}
-    `,
-  }).unknown(true),
-}), auth);
+app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
