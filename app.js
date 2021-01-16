@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const { celebrate, Joi, errors } = require('celebrate');
 
@@ -26,6 +27,22 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 app.use(requestLogger);
+
+app.use('*', cors({
+  origin: [
+    'https://thedoft.mesto.students.nomoredomains.rocks',
+    'http://thedoft.mesto.students.nomoredomains.rocks',
+    'http://localhost:3000',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: [
+    'Content-Type',
+    'Origin',
+  ],
+  credentials: true,
+}));
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
