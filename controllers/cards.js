@@ -6,7 +6,7 @@ const ForbiddenError = require('../errors/forbidden-err');
 
 const getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ cards }))
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 
@@ -19,7 +19,7 @@ const createCard = (req, res, next) => {
         throw new BadRequestError('Переданы некорректные данные');
       }
 
-      res.send({ card });
+      return res.send(card);
     })
     .catch(next);
 };
@@ -37,7 +37,7 @@ const deleteCard = (req, res, next) => {
 
       return Card.deleteOne({ _id: req.params._id });
     })
-    .then((card) => res.send({ card }))
+    .then((card) => res.send(card))
     .catch(next);
 };
 
@@ -52,7 +52,7 @@ const likeCard = (req, res, next) => {
         throw new NotFoundError('Карточка не найдена');
       }
 
-      res.send({ card });
+      return res.send(card);
     })
     .catch(next);
 };
@@ -68,7 +68,7 @@ const dislikeCard = (req, res, next) => {
         throw new NotFoundError('Карточка не найдена');
       }
 
-      res.send({ card });
+      return res.send(card);
     })
     .catch(next);
 };

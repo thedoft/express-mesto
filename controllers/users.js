@@ -30,7 +30,7 @@ const createUser = (req, res, next) => {
         throw new BadRequestError('Переданы некорректные данные');
       }
 
-      res.send({ user });
+      res.send(user);
     })
     .catch(next);
 };
@@ -46,16 +46,17 @@ const login = (req, res, next) => {
         { expiresIn: '7d' },
       );
 
-      res
-        .cookie('jwt', token, {
-          httpOnly: true,
-          sameSite: true,
-          maxAge: 360000 * 24 * 7,
-        })
-        .end();
+      return res.cookie('jwt', token, {
+        httpOnly: true,
+        sameSite: true,
+        maxAge: 360000 * 24 * 7,
+      })
+        .send(user);
     })
     .catch(next);
 };
+
+const signout = (req, res) => res.clearCookie('jwt', { httpOnly: true, sameSite: true }).send({ message: 'Signed Out' });
 
 const getCurrentUserInfo = (req, res, next) => {
   User.find({ _id: req.user._id })
@@ -65,7 +66,7 @@ const getCurrentUserInfo = (req, res, next) => {
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ users }))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -97,7 +98,7 @@ const updateUserInfo = (req, res, next) => {
         throw new BadRequestError('Переданы некорректные данные');
       }
 
-      res.send({ user });
+      res.send(user);
     })
     .catch(next);
 };
@@ -118,7 +119,7 @@ const updateUserAvatar = (req, res, next) => {
         throw new BadRequestError('Переданы некорректные данные');
       }
 
-      res.send({ user });
+      res.send(user);
     })
     .catch(next);
 };
@@ -126,6 +127,7 @@ const updateUserAvatar = (req, res, next) => {
 module.exports = {
   createUser,
   login,
+  signout,
   getCurrentUserInfo,
   getUsers,
   getUserById,
