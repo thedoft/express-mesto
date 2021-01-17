@@ -59,7 +59,7 @@ const login = (req, res, next) => {
 const signout = (req, res) => res.clearCookie('jwt', { httpOnly: true, sameSite: true }).send({ message: 'Signed Out' });
 
 const getCurrentUserInfo = (req, res, next) => {
-  User.find({ _id: req.user._id })
+  User.findById(req.user._id)
     .then((user) => res.send(user))
     .catch(next);
 };
