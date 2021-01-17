@@ -15,10 +15,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT } = process.env;
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -26,21 +22,12 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-app.use(requestLogger);
-
 app.use('*', cors({
-  origin: [
-    'https://thedoft.mesto.students.nomoredomains.rocks',
-    'http://thedoft.mesto.students.nomoredomains.rocks',
-    'http://localhost:3000',
-  ],
+  origin: 'https://thedoft.mesto.students.nomoredomains.rocks',
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
-  optionsSuccessStatus: 204,
-  allowedHeaders: [
-    'Content-Type',
-    'Origin',
-  ],
+  optionsSuccessStatus: 200,
+  allowedHeaders: ['Content-Type', 'Origin', 'X-Access_Token', 'Authorization'],
   credentials: true,
 }));
 
@@ -60,6 +47,11 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(requestLogger);
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -68,12 +60,10 @@ app.post('/signin', celebrate({
 }), login);
 
 app.use(auth);
-
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use(errorLogger);
-
 app.use(errors());
 
 app.use((err, req, res, next) => {
