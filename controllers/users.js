@@ -17,20 +17,27 @@ const createUser = (req, res, next) => {
     password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then((user) => {
-      if (!user) {
-        throw new BadRequestError('Переданы некорректные данные');
+  User.findOne({ email })
+    .then((existedUser) => {
+      if (existedUser) {
+        throw new BadRequestError('Пользователь с таким email уже существует');
       }
 
-      res.send(user);
+      bcrypt.hash(password, 10)
+        .then((hash) => User.create({
+          name,
+          about,
+          avatar,
+          email,
+          password: hash,
+        }))
+        .then((user) => {
+          if (!user) {
+            throw new BadRequestError('Переданы некорректные данные');
+          }
+
+          res.send(user);
+        });
     })
     .catch(next);
 };
@@ -49,7 +56,7 @@ const login = (req, res, next) => {
       return res.cookie('jwt', token, {
         httpOnly: true,
         sameSite: true,
-        maxAge: 3600 * 24 * 7,
+        maxAge: (3600 * 24 * 7),
       })
         .send(user);
     })
