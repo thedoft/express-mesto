@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     default: 'https://mtv.mtvnimages.com/uri/mgid:ao:image:mtv.com:92917?quality=0.8&format=jpg&width=1440&height=810&.jpg',
     validate: {
       validator(v) {
-        return v.match(/^(https?:\/\/)(www\.)?([\da-z-.]+)\.([a-z.]{2,6})[\da-zA-Z-._~:?#[\]@!$&'()*+,;=/]*\/?#?$/);
+        return validator.isURL(v);
       },
       message: 'Строка должна содержать ссылку!',
     },
@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
       validator(v) {
         return validator.isEmail(v);
       },
+      message: 'Строка должна содержать Email!',
     },
   },
   password: {

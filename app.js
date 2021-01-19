@@ -13,6 +13,8 @@ const auth = require('./middlewares/auth');
 const { corsConfig } = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+const NotFoundError = require('./errors/not-found-err');
+
 const { PORT = 3000 } = process.env;
 const app = express();
 
@@ -58,6 +60,14 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.get('/signout', signout);
+
+app.get('*', () => {
+  try {
+    throw new NotFoundError('Запрашиваемый ресурс не найден');
+  } catch (err) {
+    throw new NotFoundError('Запрашиваемый ресурс не найден');
+  }
+});
 
 app.use(errorLogger);
 app.use(errors());

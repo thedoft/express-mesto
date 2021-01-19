@@ -2,6 +2,8 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 Joi.objectId = require('joi-objectid')(Joi);
 
+const NotFoundError = require('../errors/not-found-err');
+
 const {
   getCurrentUserInfo,
   getUsers,
@@ -29,13 +31,10 @@ router.patch('/me', celebrate({
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().uri({
-      scheme: [
-        'https',
-        'http',
-      ],
-      allowQuerySquareBrackets: true,
-    }).required(),
+    avatar: Joi
+      .string()
+      .pattern(/^(https?:\/\/)(www\.)?([\da-z-.]+)\.([a-z.]{2,6})[\da-zA-Z-._~:?#[\]@!$&'()*+,;=/]*\/?#?$/)
+      .required(),
   }),
 }), updateUserAvatar);
 
