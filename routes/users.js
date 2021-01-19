@@ -2,8 +2,6 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 Joi.objectId = require('joi-objectid')(Joi);
 
-const NotFoundError = require('../errors/not-found-err');
-
 const {
   getCurrentUserInfo,
   getUsers,
