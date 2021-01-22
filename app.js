@@ -5,12 +5,12 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-
-const { celebrate, Joi, errors } = require('celebrate');
+const { errors } = require('celebrate');
 
 const { createUser, login, signout } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { corsConfig } = require('./middlewares/cors');
+const { createUserValidation, loginValidation } = require('./middlewares/celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const NotFoundError = require('./errors/not-found-err');
@@ -32,28 +32,9 @@ app.use(requestLogger);
 
 app.use('*', cors(corsConfig));
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().uri({
-      scheme: [
-        'https',
-        'http',
-      ],
-      allowQuerySquareBrackets: true,
-    }),
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-  }),
-}), createUser);
+app.post('/signup', createUserValidation, createUser);
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-  }),
-}), login);
+app.post('/signin', loginValidation, login);
 
 app.use(auth);
 
