@@ -31,12 +31,13 @@ const createUser = (req, res, next) => {
           email,
           password: hash,
         }))
-        .then((user) => {
-          if (!user) {
+        .then((createdUser) => {
+          if (!createdUser) {
             throw new BadRequestError('Переданы некорректные данные');
           }
 
-          res.send(user);
+          User.findOne({ email })
+            .then((user) => res.send(user));
         });
     })
     .catch(next);
@@ -46,19 +47,20 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
-    .then((user) => {
+    .then((existedUser) => {
       const token = jwt.sign(
-        { _id: user._id },
+        { _id: existedUser._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
 
-      return res.cookie('jwt', token, {
-        httpOnly: true,
-        sameSite: true,
-        maxAge: (3600 * 24 * 7),
-      })
-        .send(user);
+      User.findOne({ email })
+        .then((user) => res.cookie('jwt', token, {
+          httpOnly: true,
+          sameSite: true,
+          maxAge: (3600 * 24 * 7),
+        })
+          .send(user));
     })
     .catch(next);
 };
