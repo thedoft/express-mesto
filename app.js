@@ -56,8 +56,8 @@ app.post('/signin', celebrate({
 }), login);
 
 app.use(auth);
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
+
+app.use(require('./routes/index'));
 
 app.get('/signout', signout);
 
