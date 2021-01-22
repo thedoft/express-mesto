@@ -26,18 +26,18 @@ const createCard = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.id)
-    .then((card) => {
-      if (!card) {
+    .then((foundedCard) => {
+      if (!foundedCard) {
         throw new NotFoundError('Карточка не найдена');
       }
 
-      if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
+      if (JSON.stringify(foundedCard.owner) !== JSON.stringify(req.user._id)) {
         throw new ForbiddenError('Нет прав для совершения данной операции');
       }
 
-      return Card.deleteOne({ _id: req.params._id });
+      Card.deleteOne({ _id: req.params.id })
+        .then((removedCard) => res.send(removedCard));
     })
-    .then((card) => res.send(card))
     .catch(next);
 };
 
