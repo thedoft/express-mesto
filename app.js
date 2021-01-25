@@ -32,16 +32,19 @@ app.use(requestLogger);
 
 app.use('*', cors(corsConfig));
 
-app.post('/signup', createUserValidation, createUser);
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
+app.post('/signup', createUserValidation, createUser);
 app.post('/signin', loginValidation, login);
 
 app.use(auth);
-
 app.use(require('./routes/index'));
 
 app.get('/signout', signout);
-
 app.get('*', () => {
   try {
     throw new NotFoundError('Запрашиваемый ресурс не найден');
